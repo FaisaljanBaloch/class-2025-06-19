@@ -1,0 +1,48 @@
+---
+title: "Economic Connectedness"
+author: "Faisal Jan"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
+
+
+Opportunity Insights is a non-profit research and policy organization founded by economists Raj Chetty, John Friedman, and Nathaniel Hendren, with the mission to improve economic mobility and reduce inequality in the United States. The program leverages large-scale datasets to study the factors influencing upward mobility, such as neighborhood environments, education, and social connections. One of its key findings is the concept of "Economic Connectedness" (EC), which measures the degree of cross-class interaction and has been shown to strongly correlate with upward mobility.
+
+## Insights
+
+The histogram illustrates the distribution of U.S. county populations in 2018, revealing a highly skewed pattern. Most counties have relatively small populations, with the peak of the distribution occurring between approximately 10,000 and 50,000 residents. The population data is displayed on a logarithmic scale, which highlights the wide range of values—from counties with populations just over 1,000 to a few with populations exceeding 10 million. The long right tail of the distribution indicates that a small number of counties are home to very large populations, while the majority have much smaller populations. This skewness suggests that measures like the mean can be misleading, and it emphasizes the need for alternative metrics such as the median or log-transformed values when analyzing population data across counties.
+
+```{r}
+connectedness |> 
+  drop_na() |> 
+  ggplot(aes(x = population)) +
+    geom_histogram(bins = 100) +
+    scale_x_log10(labels = scales::comma_format()) +
+    labs(title = "US County Populations in 2018",
+         subtitle = "Populations are highly skewed",
+         x = "Population",
+         y = "Number of Counties",
+         caption = "Opportunity Insights")
+```
+
+This scatter plot displays the relationship between U.S. county populations and economic connectedness (EC) in 2018. Each point represents a county, with population plotted on a logarithmic x-axis and economic connectedness on the y-axis. The trend line, which is nearly flat, indicates that there is no meaningful correlation between a county’s population size and its level of economic connectedness. Despite the wide range in population sizes—from just over 1,000 to more than 10 million—the economic connectedness values remain relatively stable, clustered around 0.75. This suggests that larger populations do not necessarily lead to higher or lower levels of economic connectedness, and population size appears to have little impact on EC.
+
+```{r}
+connectedness |> drop_na() |>
+    ggplot(aes(x = population, y = connectedness)) +
+    geom_point(alpha = 0.5) +
+    geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE) +
+    scale_x_log10(labels = scales::comma_format()) +
+    labs(title = "US County Populations versus Economic Connectedness",
+         subtitle = "Population size does not matter to EC",
+         x = "Population",
+         y = "Economic Connectedness",
+         caption = "Opportunity Insights")
+```
